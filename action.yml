@@ -6,9 +6,8 @@ branding:
   color: green
 runs:
   using: docker
-  image: Dockerfile
+  image: docker://noenv/sonar-scanner:6.0.0
   entrypoint: "/entrypoint.sh"
-  post-entrypoint: "/cleanup.sh"
 inputs:
   args:
     description: Additional arguments to the sonar-scanner
