@@ -32,13 +32,6 @@ runs:
       with:
         branches: |
           ['iss_sonar3']
-        extra_plugins: |
-          @semantic-release/git
-          @semantic-release/github
-          @semantic-release/changelog
-          @semantic-release/commit-analyzer
-          @semantic-release/release-notes-generator
-          @semantic-release/exec
 
     - name: Test Outputs
       shell: bash
