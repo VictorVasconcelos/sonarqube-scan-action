@@ -31,6 +31,7 @@ runs:
 
 
     - name: Configure Semantic Release
+      shell: bash
       run: echo '{"branches":[],"plugins":["@semantic-release/commit-analyzer","@semantic-release/release-notes-generator","@semantic-release/github"]}' > .releaserc.json
 
 
@@ -51,6 +52,7 @@ runs:
           @semantic-release/exec
 
     - name: Test Outputs
+      shell: bash
       if: steps.semantic.outputs.new_release_published == 'true'
       run: |
         echo ${{ steps.semantic.outputs.new_release_version }}
