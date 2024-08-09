@@ -1,0 +1,59 @@
+name: semantic
+description: "Semantic"
+
+inputs:
+  GITHUB_TOKEN:
+    required: true
+    description: 'GITHUB_TOKEN'
+
+outputs:
+  new_release_published:
+    description: 'Whether a new release was published'
+
+runs:
+  using: composite
+
+  steps:
+    - uses: actions/checkout@v4
+      with:
+        # Make sure the release step uses its own credentials. (required to Semantic Release)
+        persist-credentials: false
+
+    - uses: actions/setup-java@v4
+      with:
+        distribution: 'corretto'
+        java-version: '17'
+
+    - name: setup nodejs
+      uses: actions/setup-node@v4
+      with:
+        node-version: "lts/*"
+
+
+    - name: Configure Semantic Release
+      run: echo '{"branches":[],"plugins":["@semantic-release/commit-analyzer","@semantic-release/release-notes-generator","@semantic-release/github"]}' > .releaserc.json
+
+
+    - name: Semantic Release
+      uses: cycjimmy/semantic-release-action@v4
+      id: semantic
+      env:
+        GITHUB_TOKEN: ${{ inputs.GITHUB_TOKEN }}
+      with:
+        branches: |
+          ['iss_sonar3']
+        extra_plugins: |
+          @semantic-release/git
+          @semantic-release/github
+          @semantic-release/changelog
+          @semantic-release/commit-analyzer
+          @semantic-release/release-notes-generator
+          @semantic-release/exec
+
+    - name: Test Outputs
+      if: steps.semantic.outputs.new_release_published == 'true'
+      run: |
+        echo ${{ steps.semantic.outputs.new_release_version }}
+        echo ${{ steps.semantic.outputs.new_release_major_version }}
+        echo ${{ steps.semantic.outputs.new_release_minor_version }}
+        echo ${{ steps.semantic.outputs.new_release_patch_version }}
